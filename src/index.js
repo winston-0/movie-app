@@ -1,17 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import {Space, Layout, Col, Row} from 'antd';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const {Content} = Layout
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+class App extends React.Component {
+  render() {
+    function rawCompontent() {
+      let arr = [];
+      for(let i = 0; i <= 3; i++) {
+        arr.push(<Row key={Math.random()}>
+          <Col span='12'></Col>
+          <Col span='12'></Col>
+        </Row>)
+      }
+      return arr
+    }
+    return (
+      <Space>
+        <Layout>
+          <Content>
+            {rawCompontent()}
+          </Content>
+        </Layout>
+      </Space>
+    )
+  }
+}
+
+
+let root = ReactDOM.createRoot(document.querySelector('#root'));
+
+root.render(<App/>);
