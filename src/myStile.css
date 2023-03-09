@@ -1,0 +1,17 @@
+
+
+body {
+    margin: 0 
+}
+.card {
+    display: flex;
+}
+.mainblock {
+    width: 1010px;
+    margin: 0px auto;
+    background-color: white;
+    padding: 32px;
+}
+.ant-card-body {
+    padding: 12px 20px;
+}
