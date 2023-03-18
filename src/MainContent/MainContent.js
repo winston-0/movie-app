@@ -5,18 +5,18 @@ export default class MainContent extends React.Component {
 
     render() {
         const {moviesData} = this.props
+        let loadedCards = null;
         if(moviesData !== null) {
-            const loaderCards =
+            loadedCards =
             moviesData.map(el => {
-                
+               return <Card
+                cover={<img className="movie-card__poster" src={el.poster}/>} className="movie-card">
+                </Card>
             })
         }
         return (
             <Space size={36} wrap>
-                <Card className="movie-card"></Card>
-                <Card className="movie-card"></Card>
-                <Card className="movie-card"></Card>
-                <Card className="movie-card"></Card>
+                {loadedCards}
             </Space>
         )
     }

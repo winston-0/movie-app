@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Layout } from 'antd';
-import MainContent from './MainContent';
-import movieApi from './movieApi';
+import MainContent from '../MainContent/MainContent';
+import movieApi from '../movieApi/movieApi'
 const { Content } = Layout;
 
 

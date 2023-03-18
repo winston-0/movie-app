@@ -14,7 +14,7 @@ export default class movieApi {
             return {
                 title: item.title,
                 overview: item.overview,
-                poster: `https://image.tmdb.org/t/p/w183/${item.poster_path}`
+                poster: `https://image.tmdb.org/t/p/w500${item.poster_path}`
             }
         }) 
     }
