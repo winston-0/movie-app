@@ -1,23 +1,25 @@
 import React from "react";
-import { Card, Space } from "antd";
+import { Space } from "antd";
+import MovieCards from "../MovieCards/MovieCards";
 
 export default class MainContent extends React.Component {
 
     render() {
         const {moviesData} = this.props
-        let loadedCards = null;
+        let moviesCards = null;
         if(moviesData !== null) {
-            loadedCards =
-            moviesData.map(el => {
-               return <Card
-                cover={<img className="movie-card__poster" src={el.poster}/>} className="movie-card">
-                </Card>
+            moviesCards = moviesData.map(filmData => {
+                return <MovieCards  key={Math.random() * 100} data={filmData}/>
             })
         }
         return (
             <Space size={36} wrap>
-                {loadedCards}
+                {moviesCards}
             </Space>
         )
     }
 }
+
+
+
+

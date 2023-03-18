@@ -1,0 +1,14 @@
+@import './App/App.scss';
+@import './MainContent/MainContent.scss';
+@import './MovieCards/MovieCards.scss';
+@import './Spinner/Spinner.scss';
+
+
+* {
+    box-sizing: border-box;
+}
+body {
+    background-color: #f5f5f5;
+    margin: 0;
+}
+
