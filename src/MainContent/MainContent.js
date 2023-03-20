@@ -1,12 +1,15 @@
 import React from "react";
 import { Space } from "antd";
 import MovieCard from "../MovieCard/MovieCard";
+import AlerModule from "../AlerModule/AlertModule";
 
-export default class MainContent extends React.Component {
-    renderCard() {
-        const {moviesData} = this.props
+export default function MainContent ({moviesData}) {
+    
+        if(moviesData !== null && moviesData.length === 0) {
+            return <AlerModule type="info" text="no moview was found"/>
+        }
         let moviesCards = null;
-        if(moviesData !== null) {
+        if(moviesData !== null && moviesData !== []) {
             moviesCards = moviesData.map(filmData => {
                 return <MovieCard  key={Math.random() * 100} data={filmData}/>
             })
@@ -14,14 +17,8 @@ export default class MainContent extends React.Component {
         return moviesCards 
     }
 
-    render() {
-        return (
-            <Space size={36} wrap>
-                {this.renderCard()}
-            </Space>
-        )
-    }
-}
+
+
 
 
 

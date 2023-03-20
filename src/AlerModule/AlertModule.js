@@ -1,11 +1,11 @@
 import { Alert, Space } from 'antd';
 
-export default function AlerModule({text}) { 
+export default function AlerModule({type,text}) { 
 return (
     <Alert
-        message="Error"
-        description={text}
-        type="error"
+        className='alertModule'
+        message = {text}
+        type= {type}
         showIcon
     />
   )

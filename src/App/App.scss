@@ -6,3 +6,18 @@
     min-height: 100vh;
     position: relative;
 }
+.main {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+}
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white !important;
+}
+
+.header {
+    padding-bottom: 32px;
+}
