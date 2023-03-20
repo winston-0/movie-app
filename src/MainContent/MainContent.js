@@ -1,20 +1,23 @@
 import React from "react";
 import { Space } from "antd";
-import MovieCards from "../MovieCards/MovieCards";
+import MovieCard from "../MovieCard/MovieCard";
 
 export default class MainContent extends React.Component {
-
-    render() {
+    renderCard() {
         const {moviesData} = this.props
         let moviesCards = null;
         if(moviesData !== null) {
             moviesCards = moviesData.map(filmData => {
-                return <MovieCards  key={Math.random() * 100} data={filmData}/>
+                return <MovieCard  key={Math.random() * 100} data={filmData}/>
             })
         }
+        return moviesCards 
+    }
+
+    render() {
         return (
             <Space size={36} wrap>
-                {moviesCards}
+                {this.renderCard()}
             </Space>
         )
     }

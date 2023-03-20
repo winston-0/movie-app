@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 export default class movieApi {
     async getMoviesInfo() {
-        const request = await fetch('https://api.themoviedb.org/3/search/movie?api_key=50144123a6271043596e1c7cd112f310&query=p'
+        const request = await fetch('https://api.themoviedb.org/3/search/movie?api_key=50144123a6271043596e1c7cd112f310&query=p '
         )
         if(request.ok !== true) {
             throw new Error(`something has gone wrong, error code: ${request.status}`)
