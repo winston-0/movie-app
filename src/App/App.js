@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Layout } from 'antd';
-import MainContent from '../MainContent/MainContent';
+import MoviesList from '../MoviesList/MoviesList';
 import movieApi from '../movieApi/movieApi'
 import Spinner from '../Spinner/Spinner';
 import AlertModule from '../AlerModule/AlertModule';
@@ -20,9 +20,21 @@ export default class App extends React.Component {
         loading: false,
         error: false,
         page: 1,
+        sessionId: null
     }
 
     movieApiService = new movieApi();
+    
+    componentDidMount() {
+        if(!localStorage.getItem('sessionId')) {
+         this.movieApiService.createGuestSession()
+        .then(res => localStorage.setItem('sessionId', res))
+        } else {
+         this.setState({
+            sessiodId: localStorage.getItem('sessionId')
+         })
+        }
+    }
 
     searchMovies = () => {
         this.setState({
@@ -70,7 +82,7 @@ export default class App extends React.Component {
     }
     render() {
         const {moviesData, error, loading} = this.state
-        const mainContent = loading === false ? <MainContent moviesData={moviesData}/> : <Spinner/>
+        const moviesList = loading === false ? <MoviesList moviesData={moviesData}/> : <Spinner/>
         const pagination = (moviesData !== null && moviesData.length !== 0) ? <PaginationBlock changePageNumber={this.changePageNumber}/> : null
         const errorMessage = error ? <AlertModule type="error" text="some error occured"/> : null
         return (
@@ -79,7 +91,7 @@ export default class App extends React.Component {
                     <SearchPanel getSearchInput={this.getSearchInput}/>
                 </header>
                 <Content className='main'>
-                        {mainContent}
+                        {moviesList}
                         {errorMessage}
                     <Offline>
                         <AlertModule type='error' text='no internet connection'></AlertModule>

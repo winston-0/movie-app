@@ -1,8 +1,5 @@
-import { Spin } from 'antd';
+import { Spin } from "antd";
 
 export default function Spinner() {
-    return (
-        <Spin className='Spinner' size="large">
-            
-        </Spin> )
+  return <Spin className="Spinner" size="large"></Spin>;
 }

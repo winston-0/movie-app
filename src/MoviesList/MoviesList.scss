@@ -1,0 +1,15 @@
+.ant-card-body {
+  padding: 12px 20px !important;
+  width: 100%;
+}
+
+.movie-card-loading {
+  width: 454px;
+  height: 281px;
+  box-shadow: 1px 1px 6px 0px lightgrey;
+  padding: 15px;
+  &__image {
+    width: 183px;
+    height: 281px;
+  }
+}
