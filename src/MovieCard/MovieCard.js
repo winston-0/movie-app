@@ -4,7 +4,7 @@ import RateModule from "../RateModule/RateModule";
 
 export default class MovieCards extends React.Component {
   render() {
-    const { data } = this.props;
+    const { data, onUpdateData } = this.props;
     return (
       <Card
         className="movie-card"
@@ -24,7 +24,7 @@ export default class MovieCards extends React.Component {
             <span className="movie-card__genre">Drama</span>
           </Space>
           <span className="movie-card__overview">{data.overview}</span>
-          <RateModule id={data.id} />
+          <RateModule onUpdateData={onUpdateData} id={data.id} />
         </section>
       </Card>
     );

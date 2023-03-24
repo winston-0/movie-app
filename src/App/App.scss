@@ -10,6 +10,7 @@
   display: flex;
   gap: 36px;
   flex-wrap: wrap;
+  
 }
 .footer {
   display: flex;
@@ -20,4 +21,18 @@
 
 .header {
   padding-bottom: 32px;
+}
+
+.ant-tabs .ant-tabs-content {
+  position: static;
+}
+
+.ant-tabs-nav {
+  width: fit-content;
+  align-self: center;
+}
+
+.ant-tabs-tab {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
 }

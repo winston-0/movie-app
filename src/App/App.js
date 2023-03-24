@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Layout } from 'antd';
+import { Layout, Tabs } from 'antd';
 import MoviesList from '../MoviesList/MoviesList';
 import movieApi from '../movieApi/movieApi'
 import Spinner from '../Spinner/Spinner';
@@ -20,7 +20,9 @@ export default class App extends React.Component {
         loading: false,
         error: false,
         page: 1,
-        sessionId: null
+        sessionId: null,
+        ratedMovies: null,
+        ratedPage: null
     }
 
     movieApiService = new movieApi();
@@ -35,14 +37,30 @@ export default class App extends React.Component {
          })
         }
     }
-
+    getRatedMovies = (e) => {
+        if(e === '2') {
+            this.setState({
+                loading: true
+            })
+            setTimeout(() => {
+                this.movieApiService.getRatedMovies(localStorage.getItem('sessionId'))
+                .then(this.onLoadedRatedMovies)
+                .catch(this.onError)
+            }, 500);
+        }
+    }
+    updateRatedMovies = () => {
+        this.movieApiService.getRatedMovies(localStorage.getItem('sessionId'))
+        .then(this.onLoadedRatedMovies)
+        .catch(this.onError)
+    }
     searchMovies = () => {
         this.setState({
             loading: true,
             error: false
         })
         this.movieApiService.getMoviesInfo(this.state.page, this.state.search)
-        .then(this.onLoaded)
+        .then(this.onLoadedMovies)
         .catch(this.onError)
     }
 
@@ -58,17 +76,27 @@ export default class App extends React.Component {
         })
         console.log(err)
     }
-    onLoaded = (res) => {
+    onLoadedMovies = (res) => {
         this.setState({
             moviesData: res,
             loading: false
         })
     }
-
+    onLoadedRatedMovies = (res) => {
+        this.setState({
+            ratedMovies: res,
+            loading: false
+        })
+    }
     changePageNumber = (selectedPage) => {
         this.setState({
             page: selectedPage
         })
+    }
+    changeRatedPageNumber = (selectedPage) => {
+        this.setState({
+            ratedPage: selectedPage
+        })  
     }
     getSearchInput = (e) => {
         const changeSearchValue = () => {  
@@ -81,25 +109,60 @@ export default class App extends React.Component {
         debouncedFn();
     }
     render() {
-        const {moviesData, error, loading} = this.state
-        const moviesList = loading === false ? <MoviesList moviesData={moviesData}/> : <Spinner/>
-        const pagination = (moviesData !== null && moviesData.length !== 0) ? <PaginationBlock changePageNumber={this.changePageNumber}/> : null
+        const {moviesData, error, loading, ratedMovies, ratedPagination} = this.state
+        const moviesList = (data) => loading === false ? <MoviesList moviesData={data} onUpdateData={this.updateRatedMovies}/> : <Spinner/>
+        const pagination = (type) => {
+            if(type === 'search') {
+                return (moviesData !== null && moviesData.length !== 0) ? <PaginationBlock changePageNumber={this.changePageNumber}/> : null
+            } else if(type === 'rated') {
+                return (ratedMovies !== null && ratedMovies.length !== 0) ? <PaginationBlock changePageNumber={this.changeRatedPageNumber}/> : null
+            }
+        }
         const errorMessage = error ? <AlertModule type="error" text="some error occured"/> : null
+        const items = [
+            {
+                key: '1',
+                label: `Search`,
+                children: (
+                    <React.Fragment>
+                    <header className='header'>
+                        <SearchPanel getSearchInput={this.getSearchInput}/>
+                    </header>
+                    <Content className='main'>
+                            {moviesList(moviesData)}
+                            {errorMessage}
+                        <Offline>
+                            <AlertModule type='error' text='no internet connection'></AlertModule>
+                        </Offline>
+                    </Content>
+                    <Footer className='footer'>
+                        {pagination('search')}
+                    </Footer>
+                    </React.Fragment>
+                ),
+              },
+              {
+                key: '2',
+                label: `Rated`,
+                children: (
+                    <React.Fragment>
+                    <Content className='main'>
+                            {moviesList(ratedMovies)}
+                            {errorMessage}
+                        <Offline>
+                            <AlertModule type='error' text='no internet connection'></AlertModule>
+                        </Offline>
+                    </Content>
+                    <Footer className='footer'>
+                        {pagination('rated')}
+                    </Footer>
+                    </React.Fragment>
+                ),
+              }
+        ]
         return (
             <Layout className="movie-app-cont">
-                <header className='header'>
-                    <SearchPanel getSearchInput={this.getSearchInput}/>
-                </header>
-                <Content className='main'>
-                        {moviesList}
-                        {errorMessage}
-                    <Offline>
-                        <AlertModule type='error' text='no internet connection'></AlertModule>
-                    </Offline>
-                </Content>
-                <Footer className='footer'>
-                    {pagination}
-                </Footer>
+                <Tabs onChange={(e) => this.getRatedMovies(e)} centered defaultActiveKey="1" items={items}/>
         </Layout>
         )
     }

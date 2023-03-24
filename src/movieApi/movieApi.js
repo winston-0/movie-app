@@ -1,5 +1,7 @@
 import { format } from "date-fns";
 export default class movieApi {
+  apiKey = "50144123a6271043596e1c7cd112f310"
+  guest_session_id = localStorage.getItem('sessionId')
   async createGuestSession() {
     let request = await fetch(
       "https://api.themoviedb.org/3/authentication/guest_session/new?api_key=50144123a6271043596e1c7cd112f310"
@@ -7,7 +9,33 @@ export default class movieApi {
     let answer = await request.json();
     return answer.guest_session_id;
   }
-
+  addRatedMovie(id, value) {
+    let url = new URL(`https://api.themoviedb.org/3/movie/${id}/rating`)
+    url.searchParams.append("api_key", this.apiKey)
+    url.searchParams.append("guest_session_id", this.guest_session_id)
+     fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({value})
+    })
+  }
+  async getRatedMovies()  {
+    let request = await fetch(`https://api.themoviedb.org/3/guest_session/${this.guest_session_id}/rated/movies?api_key=50144123a6271043596e1c7cd112f310`)
+    let result = await request.json();
+    return this._transformData(result.results);
+  }
+  deleteRatedMovie = async ( movieId) => {
+    let url = new URL(`https://api.themoviedb.org/3/movie/${movieId}/rating`)
+    url.searchParams.append("api_key", this.apiKey)
+    url.searchParams.append("guest_session_id", this.guest_session_id)
+    let request = await fetch(url, {
+      method: 'DELETE'
+    })
+    let result =  await request.json();
+    return result
+  }
   async getMoviesInfo(page = 1, search) {
     if (search === "") {
       return null;
