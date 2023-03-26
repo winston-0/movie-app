@@ -27,7 +27,7 @@ export default class RateModule extends React.Component {
     this.movieApiService.addRatedMovie(id, value)
     } else {
       this.movieApiService.deleteRatedMovie(id)
-      setTimeout(onUpdateData, 300);
+      setTimeout(onUpdateData, 1000);
     }
   };
 

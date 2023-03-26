@@ -22,7 +22,9 @@ export default class App extends React.Component {
         page: 1,
         sessionId: null,
         ratedMovies: null,
-        ratedPage: null
+        ratedPage: null,
+        totalPages: null,
+        totalRatedPages: null
     }
 
     movieApiService = new movieApi();
@@ -66,7 +68,7 @@ export default class App extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(prevState.page !== this.state.page || prevState.search !== this.state.search) {
-            this.searchMovies()
+                this.searchMovies() 
         }
     }
     onError = (err) => {
@@ -77,21 +79,36 @@ export default class App extends React.Component {
         console.log(err)
     }
     onLoadedMovies = (res) => {
+        if(res !== null) {
+        const [moviesData, totalPages] = res;
+        setTimeout(() => {
+            this.setState({
+                moviesData: moviesData,
+                loading: false,
+                totalPages: totalPages
+            })
+        }, 1000)
+    } else {
         this.setState({
-            moviesData: res,
-            loading: false
-        })
+            moviesData: null,
+            loading: false,
+            totalPages: null
+    })
+    }
     }
     onLoadedRatedMovies = (res) => {
+        const [moviesData, totalPages] = res;
         this.setState({
-            ratedMovies: res,
-            loading: false
+            ratedMovies: moviesData,
+            loading: false,
+            totalRatedPages: totalPages
         })
     }
     changePageNumber = (selectedPage) => {
         this.setState({
             page: selectedPage
         })
+        window.scrollTo(0, 0)
     }
     changeRatedPageNumber = (selectedPage) => {
         this.setState({
@@ -105,17 +122,25 @@ export default class App extends React.Component {
                 page: 1
             })
         }
-        const debouncedFn = debounce(changeSearchValue, 3000)
+        const debouncedFn = debounce(changeSearchValue, 1500)
         debouncedFn();
     }
     render() {
-        const {moviesData, error, loading, ratedMovies, ratedPagination} = this.state
-        const moviesList = (data) => loading === false ? <MoviesList moviesData={data} onUpdateData={this.updateRatedMovies}/> : <Spinner/>
+        const {moviesData, error, loading, ratedMovies, totalPages, totalRatedPages} = this.state
+        const moviesList = (data) => 
+        {if(loading === false && moviesData !== null){ 
+          return  <MoviesList loading={false} moviesData={data} onUpdateData={this.updateRatedMovies}/>
+        } else if(loading === true && moviesData !== null) {
+          return  <MoviesList loading={true} moviesData={data} onUpdateData={this.updateRatedMovies}/>
+        } else if(loading === true && moviesData === null) {
+          return  <Spinner/>
+        }
+        }
         const pagination = (type) => {
             if(type === 'search') {
-                return (moviesData !== null && moviesData.length !== 0) ? <PaginationBlock changePageNumber={this.changePageNumber}/> : null
+                return (moviesData !== null && moviesData.length !== 0 ) ? <PaginationBlock total={totalPages} changePageNumber={this.changePageNumber}/> : null
             } else if(type === 'rated') {
-                return (ratedMovies !== null && ratedMovies.length !== 0) ? <PaginationBlock changePageNumber={this.changeRatedPageNumber}/> : null
+                return (ratedMovies !== null && ratedMovies.length !== 0 ) ? <PaginationBlock total={totalRatedPages} changePageNumber={this.changeRatedPageNumber}/> : null
             }
         }
         const errorMessage = error ? <AlertModule type="error" text="some error occured"/> : null

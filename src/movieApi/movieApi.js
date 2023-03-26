@@ -24,7 +24,7 @@ export default class movieApi {
   async getRatedMovies()  {
     let request = await fetch(`https://api.themoviedb.org/3/guest_session/${this.guest_session_id}/rated/movies?api_key=50144123a6271043596e1c7cd112f310`)
     let result = await request.json();
-    return this._transformData(result.results);
+    return [this._transformData(result.results), result.total_pages];
   }
   deleteRatedMovie = async ( movieId) => {
     let url = new URL(`https://api.themoviedb.org/3/movie/${movieId}/rating`)
@@ -49,7 +49,7 @@ export default class movieApi {
         );
       }
       const result = await request.json();
-      return this._transformData(result.results);
+      return [this._transformData(result.results), result.total_pages];
     }
   }
 
@@ -70,6 +70,7 @@ export default class movieApi {
             ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
             : null,
         date: format(new Date(item.release_date || null), "MMMM d, y"),
+        averageVote: item['vote_average'].toFixed(1),
       };
     });
   }
