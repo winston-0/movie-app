@@ -43,40 +43,6 @@ export default class App extends React.Component {
         this.movieApiService.getGenres()
         .then(this.onLoadedGenres)
     }
-    onLoadedGenres = (res) => {
-        this.setState({
-            genreList: res
-        })
-    }
-    getRatedMovies = (e) => {
-        const {ratedPage} = this.state
-        if(e === '2') {
-            this.setState({
-                loading: true
-            })
-            setTimeout(() => {
-                this.movieApiService.getRatedMovies(ratedPage)
-                .then(this.onLoadedRatedMovies)
-                .catch(this.onError)
-            }, 500);
-        }
-    }
-    updateRatedMovies = () => {
-        const {ratedPage} = this.state
-        this.movieApiService.getRatedMovies(ratedPage)
-        .then(this.onLoadedRatedMovies)
-        .catch(this.onError)
-    }
-    searchMovies = () => {
-        this.setState({
-            loading: true,
-            error: false
-        })
-        this.movieApiService.getMoviesInfo(this.state.page, this.state.search)
-        .then(this.onLoadedMovies)
-        .catch(this.onError)
-    }
-
     componentDidUpdate(prevProps, prevState) {
         if(prevState.page !== this.state.page || prevState.search !== this.state.search) {
                 this.searchMovies() 
@@ -86,12 +52,16 @@ export default class App extends React.Component {
             window.scrollTo(0,0)
         }
     }
-    onError = (err) => {
+
+
+    searchMovies = () => {
         this.setState({
-            error: true,
-            loading: false
+            loading: true,
+            error: false
         })
-        console.log(err)
+        this.movieApiService.getMoviesInfo(this.state.page, this.state.search)
+        .then(this.onLoadedMovies)
+        .catch(this.onError)
     }
     onLoadedMovies = (res) => {
         if(res !== null) {
@@ -111,6 +81,27 @@ export default class App extends React.Component {
     })
     }
     }
+
+
+    getRatedMovies = (e) => {
+        const {ratedPage} = this.state
+        if(e === '2') {
+            this.setState({
+                loading: true
+            })
+            setTimeout(() => {
+                this.movieApiService.getRatedMovies(ratedPage)
+                .then(this.onLoadedRatedMovies)
+                .catch(this.onError)
+            }, 500);
+        }
+    }
+    updateRatedMovies = () => {
+        const {ratedPage} = this.state
+        this.movieApiService.getRatedMovies(ratedPage)
+        .then(this.onLoadedRatedMovies)
+        .catch(this.onError)
+    }
     onLoadedRatedMovies = (res) => {
         const [moviesData, totalPages] = res;
         this.setState({
@@ -119,6 +110,8 @@ export default class App extends React.Component {
             totalRatedPages: totalPages
         })
     }
+
+
     changePageNumber = (selectedPage) => {
         this.setState({
             page: selectedPage
@@ -130,6 +123,8 @@ export default class App extends React.Component {
             ratedPage: selectedPage
         })  
     }
+
+
     changeSearchValue = (e) => {
         this.setState({
             search: e.target.value.trim(),
@@ -140,6 +135,14 @@ export default class App extends React.Component {
     getSearchInput = (e) => {
         this.debouncedFn(e);
     }
+
+    
+    onLoadedGenres = (res) => {
+        this.setState({
+            genreList: res
+        })
+    }
+
     render() {
         const {moviesData, error, loading, ratedMovies, totalPages, totalRatedPages, genreList} = this.state
         const moviesList = (data) => 

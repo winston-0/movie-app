@@ -39,7 +39,7 @@ export default class movieApi {
   getGenres = async () => {
     let request = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this.apiKey}&language=en-US`)
     let result = await request.json();
-    return result
+    return result.genres
   }
   async getMoviesInfo(page = 1, search) {
     if (search === "") {
@@ -76,6 +76,7 @@ export default class movieApi {
             : null,
         date: format(new Date(item.release_date || null), "MMMM d, y"),
         averageVote: item['vote_average'].toFixed(1),
+        genreIds: item['genre_ids']
       };
     });
   }

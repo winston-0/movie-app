@@ -1,42 +1,57 @@
 import React from "react";
 import { Card, Image, Space } from "antd";
 import RateModule from "../RateModule/RateModule";
+import { GenreConsumer } from "../GenreProvider/GenreProvider";
 
 export default class MovieCards extends React.Component {
   render() {
-    const { data, onUpdateData, loading } = this.props;
+    const { data, onUpdateData, loading, genreIds } = this.props;
     const colorForAverageRating = () => {
       if(data.averageVote > 0 && data.averageVote <= 3) {return "movie-card__average-rating--red"}
       else if(data.averageVote > 3 && data.averageVote <= 5) {return "movie-card__average-rating--orange"}
       else if(data.averageVote > 5 && data.averageVote <= 7) {return "movie-card__average-rating--yellow"}
       else if(data.averageVote > 7) {return "movie-card__average-rating--green"}
     }
-    return (
-      <Card
-        loading={loading}
-        className="movie-card"
-        cover={
-          <Image
-            placeholder={true}
-            className="movie-card__poster"
-            src={loading === true ? null : data.poster}
-          />
+    const getGenres = (genreList) => {
+      console.log(isArray(genreList))
+      const result = genreList.map(item => {
+        for(let i of genreIds) {
+          if(i in item) {
+            return <span key={Math.random() * 100} className="movie-card__genre">{item[i]}</span>
+          }
         }
-      >
-        <section className="movie-card__body">
-          <Space direction="horizontal" align="start" style={{justifyContent: "space-between"}}>
-          <h1 className="movie-card__title">{data.title}</h1>
-          <div className={`movie-card__average-rating ${colorForAverageRating()}`}>{data.averageVote}</div>
-          </Space>
-          <span className="movie-card__date">{data.date}</span>
-          <Space>
-            <span className="movie-card__genre">Action</span>
-            <span className="movie-card__genre">Drama</span>
-          </Space>
-          <span className="movie-card__overview">{data.overview}</span>
-          <RateModule onUpdateData={onUpdateData} id={data.id} />
-        </section>
-      </Card>
+      })
+      return result
+    }
+    return (
+      <GenreConsumer>
+        {(genreList) => {
+          <Card
+          loading={loading}
+          className="movie-card"
+          cover={
+            <Image
+              placeholder={true}
+              className="movie-card__poster"
+              src={loading === true ? null : data.poster}
+            />
+          }
+        >
+          <section className="movie-card__body">
+            <Space direction="horizontal" align="start" style={{justifyContent: "space-between"}}>
+            <h1 className="movie-card__title">{data.title}</h1>
+            <div className={`movie-card__average-rating ${colorForAverageRating()}`}>{data.averageVote}</div>
+            </Space>
+            <span className="movie-card__date">{data.date}</span>
+            <Space>
+              {getGenres(genreList)}
+            </Space>
+            <span className="movie-card__overview">{data.overview}</span>
+            <RateModule onUpdateData={onUpdateData} id={data.id} />
+          </section>
+        </Card>
+        }}
+        </GenreConsumer>
     );
   }
 }
