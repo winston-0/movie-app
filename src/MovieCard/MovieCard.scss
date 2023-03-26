@@ -1,12 +1,12 @@
 .movie-card {
-  width: 454px;
-  height: 281px;
+  width: 460px;
+  height: 298px;
   border-radius: 0;
   box-shadow: 1px 1px 6px 0px lightgrey;
   display: flex;
   &__poster {
     width: 183px !important;
-    height: 281px !important;
+    height: 298px !important;
     border-radius: 0% !important;
     clip-path: inset(1px 1px 1px 1px)
   }
