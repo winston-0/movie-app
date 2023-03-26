@@ -21,8 +21,8 @@ export default class movieApi {
       body: JSON.stringify({value})
     })
   }
-  async getRatedMovies()  {
-    let request = await fetch(`https://api.themoviedb.org/3/guest_session/${this.guest_session_id}/rated/movies?api_key=50144123a6271043596e1c7cd112f310`)
+  async getRatedMovies(page)  {
+    let request = await fetch(`https://api.themoviedb.org/3/guest_session/${this.guest_session_id}/rated/movies?api_key=50144123a6271043596e1c7cd112f310&page=${page}`)
     let result = await request.json();
     return [this._transformData(result.results), result.total_pages];
   }
@@ -34,6 +34,11 @@ export default class movieApi {
       method: 'DELETE'
     })
     let result =  await request.json();
+    return result
+  }
+  getGenres = async () => {
+    let request = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this.apiKey}&language=en-US`)
+    let result = await request.json();
     return result
   }
   async getMoviesInfo(page = 1, search) {
@@ -58,8 +63,8 @@ export default class movieApi {
       return {
         id: item.id,
         title:
-          item["title"].length > 40
-            ? this._shortenString(item.title, 40)
+          item["title"].length > 35
+            ? this._shortenString(item.title, 35)
             : item.title,
         overview:
           item["overview"].length > 155

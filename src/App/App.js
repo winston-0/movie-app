@@ -9,6 +9,7 @@ import { Offline, Online } from "react-detect-offline";
 import PaginationBlock from '../Pagination/Pagination';
 import SearchPanel from '../SearchPanel/SearchPanel';
 import { debounce } from "lodash";
+import { GenreProvider } from '../GenreProvider/GenreProvider';
 
 const { Content , Footer , Header} = Layout;
 
@@ -22,9 +23,10 @@ export default class App extends React.Component {
         page: 1,
         sessionId: null,
         ratedMovies: null,
-        ratedPage: null,
+        ratedPage: 1,
         totalPages: null,
-        totalRatedPages: null
+        totalRatedPages: null,
+        genreList: null
     }
 
     movieApiService = new movieApi();
@@ -38,21 +40,30 @@ export default class App extends React.Component {
             sessiodId: localStorage.getItem('sessionId')
          })
         }
+        this.movieApiService.getGenres()
+        .then(this.onLoadedGenres)
+    }
+    onLoadedGenres = (res) => {
+        this.setState({
+            genreList: res
+        })
     }
     getRatedMovies = (e) => {
+        const {ratedPage} = this.state
         if(e === '2') {
             this.setState({
                 loading: true
             })
             setTimeout(() => {
-                this.movieApiService.getRatedMovies(localStorage.getItem('sessionId'))
+                this.movieApiService.getRatedMovies(ratedPage)
                 .then(this.onLoadedRatedMovies)
                 .catch(this.onError)
             }, 500);
         }
     }
     updateRatedMovies = () => {
-        this.movieApiService.getRatedMovies(localStorage.getItem('sessionId'))
+        const {ratedPage} = this.state
+        this.movieApiService.getRatedMovies(ratedPage)
         .then(this.onLoadedRatedMovies)
         .catch(this.onError)
     }
@@ -69,6 +80,10 @@ export default class App extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if(prevState.page !== this.state.page || prevState.search !== this.state.search) {
                 this.searchMovies() 
+        }
+        if(prevState.ratedPage !== this.state.ratedPage) {
+            this.getRatedMovies('2')
+            window.scrollTo(0,0)
         }
     }
     onError = (err) => {
@@ -115,26 +130,26 @@ export default class App extends React.Component {
             ratedPage: selectedPage
         })  
     }
+    changeSearchValue = (e) => {
+        this.setState({
+            search: e.target.value.trim(),
+            page: 1
+        })
+    }
+    debouncedFn = debounce(this.changeSearchValue, 1500)
     getSearchInput = (e) => {
-        const changeSearchValue = () => {  
-            this.setState({
-                search: e.target.value.trim(),
-                page: 1
-            })
-        }
-        const debouncedFn = debounce(changeSearchValue, 1500)
-        debouncedFn();
+        this.debouncedFn(e);
     }
     render() {
-        const {moviesData, error, loading, ratedMovies, totalPages, totalRatedPages} = this.state
+        const {moviesData, error, loading, ratedMovies, totalPages, totalRatedPages, genreList} = this.state
         const moviesList = (data) => 
-        {if(loading === false && moviesData !== null){ 
+        {if(loading === false && data !== null){ 
           return  <MoviesList loading={false} moviesData={data} onUpdateData={this.updateRatedMovies}/>
-        } else if(loading === true && moviesData !== null) {
+        } else if(loading === true && data !== null) {
           return  <MoviesList loading={true} moviesData={data} onUpdateData={this.updateRatedMovies}/>
-        } else if(loading === true && moviesData === null) {
+        } else if(loading === true && data === null) {
           return  <Spinner/>
-        }
+        } 
         }
         const pagination = (type) => {
             if(type === 'search') {
@@ -154,7 +169,9 @@ export default class App extends React.Component {
                         <SearchPanel getSearchInput={this.getSearchInput}/>
                     </header>
                     <Content className='main'>
+                        <GenreProvider value={genreList}>
                             {moviesList(moviesData)}
+                        </GenreProvider>
                             {errorMessage}
                         <Offline>
                             <AlertModule type='error' text='no internet connection'></AlertModule>
@@ -172,7 +189,9 @@ export default class App extends React.Component {
                 children: (
                     <React.Fragment>
                     <Content className='main'>
+                        <GenreProvider value={genreList}>
                             {moviesList(ratedMovies)}
+                        </GenreProvider>
                             {errorMessage}
                         <Offline>
                             <AlertModule type='error' text='no internet connection'></AlertModule>
