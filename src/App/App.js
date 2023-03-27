@@ -52,7 +52,7 @@ export default class App extends React.Component {
 
   searchMovies = () => {
     this.setState({
-      loading: true,
+      loading: this.state.search === '' ? false : true,
       error: false,
     })
     this.movieApiService.getMoviesInfo(this.state.page, this.state.search).then(this.onLoadedMovies).catch(this.onError)
