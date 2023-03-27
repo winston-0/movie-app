@@ -128,16 +128,22 @@ export default class App extends React.Component {
       genreList: res,
     })
   }
-
+  onTabChange = () => {
+    this.setState({
+      loading: false,
+    })
+  }
   render() {
     const { moviesData, error, loading, ratedMovies, totalPages, totalRatedPages, genreList } = this.state
     const moviesList = (data) => {
-      if (loading === false && data !== null) {
+      if (loading === false && data !== null && data.length !== 0) {
         return <MoviesList loading={false} moviesData={data} onUpdateData={this.updateRatedMovies} />
-      } else if (loading === true && data !== null) {
+      } else if (loading === true && data !== null && data.length !== 0) {
         return <MoviesList loading={true} moviesData={data} onUpdateData={this.updateRatedMovies} />
-      } else if (loading === true && data === null) {
+      } else if ((loading === true && data === null) || (loading === true && data.length === 0)) {
         return <Spinner />
+      } else if (loading === false && data !== null && data.length === 0) {
+        return <AlertModule type="info" text="no moview was found" />
       }
     }
     const pagination = (type) => {
@@ -191,7 +197,15 @@ export default class App extends React.Component {
     ]
     return (
       <Layout className="movie-app-cont">
-        <Tabs onChange={(e) => this.getRatedMovies(e)} centered defaultActiveKey="1" items={items} />
+        <Tabs
+          onChange={(e) => {
+            this.onTabChange()
+            this.getRatedMovies(e)
+          }}
+          centered
+          defaultActiveKey="1"
+          items={items}
+        />
       </Layout>
     )
   }
