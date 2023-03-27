@@ -2,16 +2,16 @@ import { format } from 'date-fns'
 export default class movieApi {
   basis = 'https://api.themoviedb.org/3'
   apiKey = '50144123a6271043596e1c7cd112f310'
-  guest_session_id = localStorage.getItem('sessionId')
   async createGuestSession() {
     let request = await fetch(`${this.basis}/authentication/guest_session/new?api_key=${this.apiKey}`)
     let answer = await request.json()
     return answer.guest_session_id
   }
   addRatedMovie(id, value) {
+    const guest_session_id = localStorage.getItem('sessionId')
     let url = new URL(`${this.basis}/movie/${id}/rating`)
     url.searchParams.append('api_key', this.apiKey)
-    url.searchParams.append('guest_session_id', this.guest_session_id)
+    url.searchParams.append('guest_session_id', guest_session_id)
     fetch(url, {
       method: 'POST',
       headers: {
@@ -21,16 +21,18 @@ export default class movieApi {
     })
   }
   async getRatedMovies(page) {
+    const guest_session_id = localStorage.getItem('sessionId')
     let request = await fetch(
-      `${this.basis}/guest_session/${this.guest_session_id}/rated/movies?api_key=${this.apiKey}&page=${page}`
+      `${this.basis}/guest_session/${guest_session_id}/rated/movies?api_key=${this.apiKey}&page=${page}`
     )
     let result = await request.json()
     return [this._transformData(result.results), result.total_pages]
   }
   deleteRatedMovie = async (movieId) => {
+    const guest_session_id = localStorage.getItem('sessionId')
     let url = new URL(`${this.basis}/movie/${movieId}/rating`)
     url.searchParams.append('api_key', this.apiKey)
-    url.searchParams.append('guest_session_id', this.guest_session_id)
+    url.searchParams.append('guest_session_id', guest_session_id)
     let request = await fetch(url, {
       method: 'DELETE',
     })
