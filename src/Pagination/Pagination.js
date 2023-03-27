@@ -1,7 +1,7 @@
-import { Pagination } from "antd";
+import { Pagination } from 'antd'
 
 export default function PaginationBlock(props) {
-  const { changePageNumber, total } = props;
+  const { changePageNumber, total } = props
   return (
     <Pagination
       onChange={(page) => changePageNumber(page)}
@@ -10,5 +10,5 @@ export default function PaginationBlock(props) {
       showSizeChanger={false}
       total={total + '0'}
     />
-  );
+  )
 }

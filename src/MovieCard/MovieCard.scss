@@ -8,7 +8,7 @@
     width: 183px !important;
     height: 298px !important;
     border-radius: 0% !important;
-    clip-path: inset(1px 1px 1px 1px)
+    clip-path: inset(1px 1px 1px 1px);
   }
   &__title {
     font-size: 20px;
@@ -53,16 +53,16 @@
     font-size: 12px;
     font-weight: 500;
     &--red {
-      border-color: #E90000;
+      border-color: #e90000;
     }
     &--orange {
-      border-color: #E97E00;
+      border-color: #e97e00;
     }
     &--yellow {
-      border-color: #E9D100;
+      border-color: #e9d100;
     }
     &--green {
-      border-color: #66E900;
+      border-color: #66e900;
     }
   }
 }

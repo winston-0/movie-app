@@ -1,6 +1,3 @@
-import { createContext } from 'react';
+import { createContext } from 'react'
 
-export const {
-    Provider : GenreProvider, 
-    Consumer : GenreConsumer
-    } = createContext()
+export const { Provider: GenreProvider, Consumer: GenreConsumer } = createContext()
