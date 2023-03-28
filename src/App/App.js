@@ -29,6 +29,12 @@ export default class App extends React.Component {
 
   movieApiService = new movieApi()
 
+  componentWillUnmount() {
+    this.setState({
+      moviesData: null,
+    })
+  }
+
   componentDidMount() {
     if (!localStorage.getItem('sessionId')) {
       this.movieApiService.createGuestSession().then((res) => localStorage.setItem('sessionId', res))
@@ -40,7 +46,13 @@ export default class App extends React.Component {
     this.movieApiService.getGenres().then(this.onLoadedGenres)
   }
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.page !== this.state.page || prevState.search !== this.state.search) {
+    if (prevState.page !== this.state.page) {
+      this.searchMovies()
+    }
+    if (prevState.search !== this.state.search) {
+      this.setState({
+        page: 1,
+      })
       this.searchMovies()
     }
     if (prevState.ratedPage !== this.state.ratedPage) {
