@@ -1,6 +1,5 @@
 import React from 'react'
 import { Layout, Tabs } from 'antd'
-import { Offline, Online } from 'react-detect-offline'
 import { debounce } from 'lodash'
 
 import MoviesList from '../MoviesList/MoviesList'
@@ -164,19 +163,20 @@ export default class App extends React.Component {
         label: 'Search',
         children: (
           <React.Fragment>
-            <Online>
-              <header className="header">
-                <SearchPanel getSearchInput={this.getSearchInput} />
-              </header>
-              <Content className="main">
-                <GenreProvider value={genreList}>{moviesList(moviesData)}</GenreProvider>
-                {errorMessage}
-              </Content>
-              <Footer className="footer">{pagination('search')}</Footer>
-            </Online>
-            <Offline>
+            {navigator.onLine ? (
+              <React.Fragment>
+                <header className="header">
+                  <SearchPanel getSearchInput={this.getSearchInput} />
+                </header>
+                <Content className="main">
+                  <GenreProvider value={genreList}>{moviesList(moviesData)}</GenreProvider>
+                  {errorMessage}
+                </Content>
+                <Footer className="footer">{pagination('search')}</Footer>
+              </React.Fragment>
+            ) : (
               <AlertModule type="error" text="no internet connection"></AlertModule>
-            </Offline>
+            )}
           </React.Fragment>
         ),
       },
@@ -185,16 +185,17 @@ export default class App extends React.Component {
         label: 'Rated',
         children: (
           <React.Fragment>
-            <Online>
-              <Content className="main">
-                <GenreProvider value={genreList}>{moviesList(ratedMovies)}</GenreProvider>
-                {errorMessage}
-              </Content>
-              <Footer className="footer">{pagination('rated')}</Footer>
-            </Online>
-            <Offline>
+            {navigator.onLine ? (
+              <React.Fragment>
+                <Content className="main">
+                  <GenreProvider value={genreList}>{moviesList(ratedMovies)}</GenreProvider>
+                  {errorMessage}
+                </Content>
+                <Footer className="footer">{pagination('rated')}</Footer>
+              </React.Fragment>
+            ) : (
               <AlertModule type="error" text="no internet connection"></AlertModule>
-            </Offline>
+            )}
           </React.Fragment>
         ),
       },
