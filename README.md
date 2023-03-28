@@ -1,1 +1,1 @@
-https://movie-app-winston-0.vercel.app/
+https://movie-kemij2wic-winston-0.vercel.app/
