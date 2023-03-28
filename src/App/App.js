@@ -60,6 +60,11 @@ export default class App extends React.Component {
       window.scrollTo(0, 0)
     }
   }
+  componentDidCatch() {
+    this.setState({
+      error: true,
+    })
+  }
 
   searchMovies = () => {
     this.setState({
@@ -67,6 +72,12 @@ export default class App extends React.Component {
       error: false,
     })
     this.movieApiService.getMoviesInfo(this.state.page, this.state.search).then(this.onLoadedMovies).catch(this.onError)
+  }
+  onError = () => {
+    this.setState({
+      error: true,
+      loading: false,
+    })
   }
   onLoadedMovies = (res) => {
     if (res !== null) {
